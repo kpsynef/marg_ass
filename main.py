@@ -17,7 +17,7 @@ import os
 # In[4]:
 
 path_db=os.environ.get('path_to_db')
-dbengine=sqlalchemy.create_engine(path)
+dbengine=sqlalchemy.create_engine(path_db)
 
 
 # In[ ]:
