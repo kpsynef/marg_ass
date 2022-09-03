@@ -6,8 +6,9 @@
 
 import sqlalchemy
 from fastapi import FastAPI,Response
-
-
+import logging
+import sqlite3
+logging.debug(sqlite3.sqlite_version)
 # In[3]:
 
 
@@ -45,6 +46,13 @@ def task2():
     query=pd.read_sql_query("""SELECT Country,day_name,ROUND(AVG(temp),1) as average_temp from
 (SELECT Country,temp,day_name,validdate,row_number() OVER(PARTITION BY Country,day_name ORDER by validdate ) as row FROM forecast ORDER BY row DESC Limit 63  )
 GROUP BY Country,day_name ORDER BY Country,day_name""",con=dbengine)
+
+
+    return query
+@app.get("/task_2c")
+def task2():
+    query=pd.read_sql_query("""SELECT Country,temp,day_name,validdate,row_number() OVER(PARTITION BY Country,day_name ORDER by validdate ) as row FROM forecast 
+""",con=dbengine)
 
 
     return query
