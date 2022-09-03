@@ -19,6 +19,7 @@ import os
 
 path_db=os.environ.get('path_to_db')
 dbengine=sqlalchemy.create_engine(path_db)
+path=os.environ.get('sqlite_db')
 
 
 # In[ ]:
@@ -51,11 +52,13 @@ GROUP BY Country,day_name ORDER BY Country,day_name""",con=dbengine)
     return query
 @app.get("/task_2c")
 def task2():
-    query=pd.read_sql_query("""SELECT Country,temp,day_name,validdate,row_number() OVER(PARTITION BY Country,day_name ORDER by validdate ) as row FROM forecast 
-""",con=dbengine)
+    con = sqlite3.connect(path)
+    df = pd.read_sql_query("""SELECT Country,day_name,ROUND(AVG(temp),1) as average_temp from
+(SELECT Country,temp,day_name,validdate,row_number() OVER(PARTITION BY Country,day_name ORDER by validdate ) as row FROM forecast ORDER BY row DESC Limit 63  )
+GROUP BY Country,day_name ORDER BY Country,day_name""", con)
 
 
-    return query
+    return df
 
 @app.get("/task_3")
 def task3(n):
