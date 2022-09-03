@@ -1,0 +1,6 @@
+sqlalchemy
+fastapi
+uvicorn
+uvloop
+httptools
+pandas==1.3.5
