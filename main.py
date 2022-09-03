@@ -34,8 +34,7 @@ def task1():
 
 @app.get("/task_2")
 def task2():
-    query=pd.read_sql_query("""SELECT Country,temp,day_name,validdate,row_number() OVER(PARTITION BY Country,day_name ORDER by validdate ) as row FROM forecast ORDER BY row DESC Limit 63
-""",con=dbengine)
+    query=pd.read_sql_query("SELECT Country,temp,day_name,validdate,row_number() OVER(PARTITION BY Country,day_name ORDER by validdate ) as row FROM forecast ORDER BY row DESC Limit 63",con=dbengine)
     query=query.groupby(['Country','day_name']).agg(avg_temp=('temp','mean')).round(1).reset_index()
 
 
