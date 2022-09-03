@@ -23,7 +23,7 @@ dbengine=sqlalchemy.create_engine(path_db)
 # In[ ]:
 
 
-app = FastAPI()
+app = FastAPI(debug=True)
 
 @app.get("/task_1")
 def task1():
@@ -40,6 +40,15 @@ GROUP BY Country,day_name ORDER BY Country,day_name""",con=dbengine)
 
 
     return Response(query.to_json(orient="records"), media_type="application/json")
+
+@app.get("/task_2b")
+def task2():
+    query=pd.read_sql_query("""SELECT Country,day_name,ROUND(AVG(temp),1) as average_temp from
+(SELECT Country,temp,day_name,validdate,row_number() OVER(PARTITION BY Country,day_name ORDER by validdate ) as row FROM forecast ORDER BY row DESC Limit 63  )
+GROUP BY Country,day_name ORDER BY Country,day_name""",con=dbengine)
+
+
+    return query
 
 @app.get("/task_3")
 def task3(n):
